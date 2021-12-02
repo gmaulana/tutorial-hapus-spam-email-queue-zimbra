@@ -1,0 +1,22 @@
+1. buka admin console dan masuk ke monitor > mailqueue
+2. lihat email yang tertahan di queue
+3. cari sender spam
+4. lakukan locked telebih dahulu kepada sender spam caranya "zmprov ma maulana@maraya.net zimbraAccountStatus locked" (ganti maulana@maraya.net dengan sender spam)
+5. hapus queue email bisa dengan cara admin console & CLI 
+Admin Console :
+- Masuk dan pilih Monitor > mailqueue, pada kolom sender address klik nama user, lalu scroll down, pada kolom recepients diamati user tersebut melakukan spam atau bukan
+- untuk menghapus antrean email yang terindikasi spam, klik kanan pada user yang terindikasi spam, lalu pilih delete > yes
+
+Via CLI :
+- untuk memeriksa antrean email "/opt/zimbra/libexec/zmqstat"
+- login sebagai user zimbra > su zimbra 
+- ketikan "mailq" 
+- setelah mengetahui user mana yang terindikasi spam ketikan perintah berikut untuk menghapus antrian email spam
+Zimbra Versi 8.7 Kebawah
+/opt/zimbra/postfix/sbin/postqueue -p | egrep -v '^ *\(|-Queue ID-' | awk 'BEGIN { RS = "" } { if ($7 == "maulana@maraya.net") print $1} ' | tr -d '*!' | /opt/zimbra/postfix/sbin/postsuper -d - 
+
+Zimbra versi 8.7 Keatas
+/opt/zimbra/common/sbin/postqueue -p | egrep -v '^ *\(|-Queue ID-' | awk 'BEGIN { RS = "" } { if ($7 == "maulana@maraya.net") print $1} ' | tr -d '*!' | /opt/zimbra/common/sbin/postsuper -d -
+
+7. setelah antrian email dihapus lakukan unlock / active terhadap user yang terkena spam tadi dengan cara
+zmprov ma maulana@maraya.net zimbraAccountStatus active (ganti maulana@maraya.net dengan akun spam)
